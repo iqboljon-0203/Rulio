@@ -1,0 +1,143 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.btn:hover::after {
+  opacity: 0.08;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Primary */
+.primary {
+  background: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: 0 1px 3px rgba(67, 56, 202, 0.3);
+}
+
+.primary:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.35);
+}
+
+/* Secondary / Outline */
+.secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+
+.secondary:hover {
+  background: var(--primary-bg);
+}
+
+/* Ghost */
+.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.ghost:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Accent */
+.accent {
+  background: var(--accent);
+  color: var(--bg-dark);
+  box-shadow: 0 1px 3px rgba(6, 214, 160, 0.3);
+}
+
+.accent:hover {
+  background: var(--accent-dark);
+  color: var(--text-inverse);
+}
+
+/* Danger */
+.danger {
+  background: var(--error);
+  color: var(--text-inverse);
+}
+
+.danger:hover {
+  background: #DC2626;
+}
+
+/* Sizes */
+.sm {
+  padding: 8px 16px;
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+}
+
+.lg {
+  padding: 16px 32px;
+  font-size: var(--text-base);
+  border-radius: var(--radius-lg);
+}
+
+/* Full width */
+.fullWidth {
+  width: 100%;
+}
+
+/* Disabled */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading */
+.loading {
+  pointer-events: none;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 600ms linear infinite;
+}
+
+/* Icon only */
+.iconOnly {
+  padding: 10px;
+}
+
+.iconOnly.sm {
+  padding: 6px;
+}
+
+.iconOnly.lg {
+  padding: 14px;
+}

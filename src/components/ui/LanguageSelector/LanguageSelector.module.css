@@ -1,0 +1,285 @@
+.wrapper {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+}
+
+.fullWidth {
+  width: 100%;
+  display: block;
+}
+
+.fullWidth .trigger {
+  width: 100%;
+  justify-content: space-between;
+  padding: 10px 14px;
+}
+
+.fullWidth .dropdown {
+  width: 100%;
+  min-width: 100%;
+}
+
+/* ==========================================================================
+   Trigger Button — Modern Pill / Squircle
+   ========================================================================== */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #ffffff;
+  border: 1px solid rgba(20, 18, 58, 0.12);
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--navy, #14123A);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.02);
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  white-space: nowrap;
+  outline: none;
+}
+
+.triggerContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.flagWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.label {
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.trigger:hover {
+  background: #F8FAFC;
+  border-color: rgba(20, 18, 58, 0.22);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+}
+
+.trigger:active {
+  transform: translateY(0);
+}
+
+.triggerOpen {
+  background: #FFFFFF;
+  border-color: var(--brand, #06D6A0);
+  box-shadow: 0 0 0 3px rgba(6, 214, 160, 0.18), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+}
+
+.chevron {
+  width: 12px;
+  height: 12px;
+  color: #8A8FA8;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), color 150ms ease;
+  flex-shrink: 0;
+}
+
+.trigger:hover .chevron {
+  color: var(--navy, #14123A);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: var(--brand-ink, #04694F);
+}
+
+/* ==========================================================================
+   Dropdown Menu — Glassmorphic Floating Panel
+   ========================================================================== */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(20, 18, 58, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.14),
+              0 10px 20px -8px rgba(15, 23, 42, 0.06),
+              0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  padding: 6px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: dropdownPop 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
+}
+
+@keyframes dropdownPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dropdownHeader {
+  padding: 6px 10px 4px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94A3B8;
+  user-select: none;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Option Row */
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 140ms ease;
+  text-align: left;
+}
+
+.optionLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.optionFlag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.optionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy, #14123A);
+  line-height: 1.2;
+}
+
+.optionSubtitle {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #64748B;
+  line-height: 1.2;
+}
+
+.optionRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.codeBadge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748B;
+  background: #F1F5F9;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+}
+
+.checkCircle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--brand, #06D6A0);
+  color: #FFFFFF;
+}
+
+.checkIcon {
+  width: 10px;
+  height: 10px;
+  stroke: #FFFFFF;
+}
+
+.option:hover {
+  background: #F1F5F9;
+}
+
+.option:hover .optionTitle {
+  color: #0F172A;
+}
+
+.optionActive {
+  background: rgba(6, 214, 160, 0.1);
+}
+
+.optionActive .optionTitle {
+  color: var(--brand-ink, #04694F);
+  font-weight: 700;
+}
+
+.optionActive .codeBadge {
+  background: rgba(6, 214, 160, 0.2);
+  color: var(--brand-ink, #04694F);
+}
+
+/* ==========================================================================
+   Variants
+   ========================================================================== */
+/* Compact variant — used in TopNav & Header */
+.compact .trigger {
+  height: 36px;
+  padding: 0 11px;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1px solid rgba(20, 18, 58, 0.1);
+  border-radius: 9999px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.compact .label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--navy, #14123A);
+}
+
+/* Ghost variant */
+.ghost .trigger {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.ghost .trigger:hover {
+  background: rgba(20, 18, 58, 0.05);
+  box-shadow: none;
+}

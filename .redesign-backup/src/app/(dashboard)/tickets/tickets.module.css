@@ -1,0 +1,201 @@
+.ticketsPage {
+  animation: fadeIn var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .pageHeader {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.pageTitle {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.pageSubtitle {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.statsSummary {
+  display: flex;
+  gap: 10px;
+}
+
+.statBadgePassed {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  background: #DCFCE7;
+  color: #166534;
+  border-radius: var(--radius-full);
+}
+
+.statBadgeFailed {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  background: #FEE2E2;
+  color: #991B1B;
+  border-radius: var(--radius-full);
+}
+
+/* Filter tabs */
+.filterTabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.filterBtn {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.filterBtn:hover {
+  border-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.filterBtnActive {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.filterBtnActive:hover {
+  background: var(--primary-dark);
+  color: white;
+}
+
+/* Grid */
+.ticketsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 480px) {
+  .ticketsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 640px) {
+  .ticketsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ticketsGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.ticketCard {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.ticketCard:hover {
+  border-color: var(--primary);
+  box-shadow: 0 8px 20px rgba(67, 56, 202, 0.12);
+  transform: translateY(-4px);
+}
+
+.ticketNumber {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--primary);
+  margin: 6px 0 2px;
+}
+
+.ticketLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.ticketStatus {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  display: inline-block;
+}
+
+.statusNew {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.statusPassed {
+  background: #DCFCE7;
+  color: #166534;
+}
+
+.statusFailed {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.ticketLocked {
+  background: #FAFAFA;
+  border-style: dashed;
+}
+
+.lockBadge {
+  font-size: 11px;
+  font-weight: 800;
+  background: #FEF3C7;
+  color: #92400E;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.ticketCardFooter {
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}

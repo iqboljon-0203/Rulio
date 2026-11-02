@@ -1,0 +1,113 @@
+.logoContainer {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  text-decoration: none;
+}
+
+.logoLink {
+  display: inline-flex;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 150ms ease;
+}
+
+.logoLink:hover {
+  opacity: 0.92;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logoLink:hover .iconWrapper {
+  transform: rotate(-5deg) scale(1.05);
+}
+
+.svgIcon {
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(67, 56, 202, 0.25));
+}
+
+.logotype {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  position: relative;
+}
+
+.brandPrimary {
+  color: var(--primary);
+  background: linear-gradient(135deg, #3730A3 0%, #4F46E5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brandAccent {
+  color: #06D6A0;
+  background: linear-gradient(135deg, #06D6A0 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brandDot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: #06D6A0;
+  border-radius: 50%;
+  margin-left: 1px;
+}
+
+/* Sizes */
+.sm .logotype {
+  font-size: 17px;
+}
+
+.sm .brandDot {
+  width: 4px;
+  height: 4px;
+}
+
+.md .logotype {
+  font-size: 21px;
+}
+
+.lg .logotype {
+  font-size: 26px;
+}
+
+.lg .brandDot {
+  width: 6px;
+  height: 6px;
+}
+
+.xl .logotype {
+  font-size: 32px;
+}
+
+.xl .brandDot {
+  width: 7px;
+  height: 7px;
+}
+
+/* Themes */
+.light .brandPrimary {
+  color: #FFFFFF;
+  background: none;
+  -webkit-text-fill-color: #FFFFFF;
+}
+
+.light .brandAccent {
+  color: #34D399;
+  background: none;
+  -webkit-text-fill-color: #34D399;
+}

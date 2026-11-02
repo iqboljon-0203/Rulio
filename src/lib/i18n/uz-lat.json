@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "home": "Bosh sahifa",
+    "tickets": "Biletlar",
+    "random": "Random test",
+    "saved": "Saqlangan",
+    "mistakes": "Xatolar",
+    "results": "Natijalar",
+    "settings": "Sozlamalar",
+    "pricing": "Tariflar",
+    "faq": "FAQ",
+    "contact": "Aloqa",
+    "login": "Kirish",
+    "register": "Ro'yxatdan o'tish",
+    "logout": "Chiqish",
+    "admin": "Admin panel"
+  },
+  "hero": {
+    "title": "Rulio bilan prava imtihoniga",
+    "titleHighlight": "100%",
+    "titleEnd": "tayyor bo'ling",
+    "subtitle": "Haqiqiy imtihon savollari, xatolar tahlili va interaktiv mashg'ulotlar orqali haydovchilik guvohnomasini olish imkoniyatingizni oshiring.",
+    "slogan": "Zamonaviy va qulay platforma.",
+    "ctaStart": "Testni boshlash",
+    "ctaPricing": "Tariflarni ko'rish"
+  },
+  "features": {
+    "questions": {
+      "title": "1000+ Savollar",
+      "desc": "Doimiy yangilanib boruvchi, YHXBB bazasiga moslashtirilgan minglab test savollari."
+    },
+    "languages": {
+      "title": "3 ta til",
+      "desc": "O'zbek (lotin, kiril) va Rus tillarida qulay interfeys va savollar bazasi."
+    },
+    "mobile": {
+      "title": "Mobil format",
+      "desc": "Istalgan joyda va istalgan vaqtda telefoningiz orqali testlarni yechish imkoniyati."
+    }
+  },
+  "trust": {
+    "title": "BIZGA ISHONCH BILDIRGAN HAYDOVCHILAR"
+  },
+  "pricing": {
+    "title": "Tariflar",
+    "subtitle": "O'zingizga mos rejani tanlang",
+    "free": {
+      "name": "Bepul",
+      "price": "0",
+      "period": "Cheksiz",
+      "features": ["5 ta bilet", "Asosiy statistika", "Reklama bor"],
+      "cta": "Boshlash"
+    },
+    "twoWeek": {
+      "name": "Premium 2 hafta",
+      "price": "15,000",
+      "period": "14 kun",
+      "features": ["Barcha biletlar", "Batafsil statistika", "Reklama yo'q", "Xatolar tahlili"],
+      "cta": "Sotib olish",
+      "popular": true
+    },
+    "oneMonth": {
+      "name": "Premium 1 oy",
+      "price": "25,000",
+      "period": "30 kun",
+      "features": ["Barcha biletlar", "Batafsil statistika", "Reklama yo'q", "Xatolar tahlili", "Prioritet yordam"],
+      "cta": "Sotib olish"
+    },
+    "threeMonth": {
+      "name": "Premium 3 oy",
+      "price": "59,000",
+      "period": "90 kun",
+      "features": ["Barcha biletlar", "Batafsil statistika", "Reklama yo'q", "Xatolar tahlili", "Prioritet yordam", "Shaxsiy maslahat"],
+      "cta": "Sotib olish"
+    },
+    "currency": "so'm"
+  },
+  "test": {
+    "ticket": "Bilet",
+    "question": "Savol",
+    "of": "dan",
+    "completed": "tugatildi",
+    "timeLeft": "Qolgan vaqt",
+    "next": "Keyingi",
+    "prev": "Oldingi",
+    "finish": "Tugatish",
+    "correct": "To'g'ri",
+    "wrong": "Noto'g'ri",
+    "skipped": "O'tkazib yuborilgan",
+    "passed": "O'tdingiz!",
+    "failed": "Yiqildingiz",
+    "tryAgain": "Qayta urinish",
+    "viewAnswers": "Javoblarni ko'rish",
+    "explanation": "Tushuntirish",
+    "save": "Saqlash",
+    "saved": "Saqlangan",
+    "unsave": "O'chirish"
+  },
+  "dashboard": {
+    "readiness": "Tayyorgarlik darajasi",
+    "totalTests": "Jami testlar",
+    "avgScore": "O'rtacha ball",
+    "streak": "Ketma-ket",
+    "recentResults": "Oxirgi natijalar",
+    "startTest": "Testni boshlash",
+    "premiumCta": "Premiumga o'tish"
+  },
+  "auth": {
+    "loginTitle": "Hisobingizga kiring",
+    "registerTitle": "Ro'yxatdan o'ting",
+    "phone": "Telefon raqam",
+    "password": "Parol",
+    "confirmPassword": "Parolni tasdiqlang",
+    "name": "Ism",
+    "forgotPassword": "Parolni unutdingizmi?",
+    "noAccount": "Hisobingiz yo'qmi?",
+    "hasAccount": "Hisobingiz bormi?",
+    "loginBtn": "Kirish",
+    "registerBtn": "Ro'yxatdan o'tish",
+    "orContinue": "yoki davom eting"
+  },
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "error": "Xatolik yuz berdi",
+    "retry": "Qayta urinish",
+    "cancel": "Bekor qilish",
+    "save": "Saqlash",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "search": "Qidirish",
+    "filter": "Filtrlash",
+    "all": "Barchasi",
+    "back": "Orqaga",
+    "close": "Yopish"
+  },
+  "footer": {
+    "copyright": "© 2026 Rulio. Barcha huquqlar himoyalangan.",
+    "privacy": "Maxfiylik siyosati",
+    "terms": "Foydalanish shartlari"
+  }
+}

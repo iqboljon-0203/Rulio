@@ -1,0 +1,297 @@
+.authPage {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--navy);
+  padding: var(--space-md);
+  overflow: hidden;
+}
+
+.authPage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 14px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(180deg, var(--sign) 0 64px, transparent 64px 112px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.authCard {
+  position: relative;
+}
+
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl) var(--space-xl);
+  box-shadow: var(--shadow-xl);
+  animation: scaleIn var(--transition-spring) forwards;
+}
+
+.authLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: var(--space-xs);
+}
+
+.authLogoIcon {
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+}
+
+.authTitle {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.authSubtitle {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-xl);
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.authDivider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin: var(--space-md) 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.authDivider::before,
+.authDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-light);
+}
+
+.authFooter {
+  text-align: center;
+  margin-top: var(--space-lg);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.authFooter a {
+  color: var(--primary);
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.authFooter a:hover {
+  color: var(--primary-dark);
+}
+
+.forgotPassword {
+  text-align: right;
+  margin-top: calc(-1 * var(--space-sm));
+}
+
+.forgotPassword a {
+  font-size: var(--text-xs);
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.authError {
+  background: var(--error-light);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-sm);
+  color: var(--error);
+}
+
+/* ===== Telegram login ===== */
+.authLogoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.authAlert {
+  margin-bottom: var(--space-md);
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--warning-light);
+  border: 1px solid var(--sign);
+  color: var(--navy);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.telegramBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  background: #2AABEE;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: var(--text-lg);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.15);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.telegramBtn:hover { background: #229ED9; }
+.telegramBtn:active { transform: translateY(1px); }
+
+.telegramBtnDisabled {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  box-shadow: none;
+  cursor: default;
+}
+
+.telegramBtnDisabled:hover { background: var(--bg-tertiary); }
+
+.loginSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px dashed var(--border-default);
+}
+
+.loginSteps li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.loginSteps b {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--sign);
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-weight: 900;
+}
+
+.loginSteps strong { color: var(--navy); }
+
+.stepDone b { background: var(--brand); }
+
+.authHint {
+  margin-top: var(--space-md);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.authHint code {
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+}
+
+/* ===== 6-digit OTP Code login ===== */
+.codeForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.codeInputWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.codeInput {
+  width: 100%;
+  max-width: 280px;
+  padding: 14px 16px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  text-align: center;
+  font-family: monospace;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.codeInput:focus {
+  border-color: #2AABEE;
+  box-shadow: 0 0 0 3px rgba(42, 171, 238, 0.2);
+}
+
+.submitCodeBtn {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 800;
+  color: white;
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.submitCodeBtn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.submitCodeBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.codeHint {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
