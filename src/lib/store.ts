@@ -2,8 +2,20 @@
 // "Upstash for Redis" integration: it sets KV_REST_API_URL + KV_REST_API_TOKEN.
 // Without those variables (local dev) an in-memory Map is used instead.
 
-const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || '';
-const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || '';
+const URL_ =
+  process.env.KV_REST_API_URL ||
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.STORAGE_REST_API_URL ||
+  process.env.STORAGE_URL ||
+  process.env.KV_URL ||
+  '';
+const TOKEN =
+  process.env.KV_REST_API_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.STORAGE_REST_API_TOKEN ||
+  process.env.STORAGE_TOKEN ||
+  process.env.KV_TOKEN ||
+  '';
 
 const memory: Map<string, string> = ((globalThis as unknown as { __rulioMem?: Map<string, string> }).__rulioMem ??=
   new Map<string, string>());

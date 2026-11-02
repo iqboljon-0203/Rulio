@@ -42,3 +42,8 @@ next-env.d.ts
 
 # Cloudflare local secrets
 .dev.vars
+
+# Local media / backups
+.redesign-backup/
+reels/
+
