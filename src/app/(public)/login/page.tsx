@@ -14,8 +14,8 @@ export default function LoginPage() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [botLink, setBotLink] = useState<string | null>(null);
-  const [botName, setBotName] = useState<string | null>(null);
+  const [botLink, setBotLink] = useState<string>('https://t.me/ruliouzbot?start=login');
+  const [botName, setBotName] = useState<string>('ruliouzbot');
   const [unavailable, setUnavailable] = useState(false);
   const [inTelegram, setInTelegram] = useState(false);
   const { t } = useLocale();
@@ -32,11 +32,11 @@ export default function LoginPage() {
     }
     fetch('/api/telegram/bot')
       .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((d: { link: string; username: string }) => {
-        setBotLink(d.link);
-        setBotName(d.username);
+      .then((d: { link?: string; username?: string }) => {
+        if (d.link) setBotLink(d.link);
+        if (d.username) setBotName(d.username);
       })
-      .catch(() => setUnavailable(true));
+      .catch(() => {});
   }, [t]);
 
   const handleCodeSubmit = async (e: React.FormEvent) => {
@@ -125,11 +125,10 @@ export default function LoginPage() {
             </div>
 
             <a
-              href={botLink ?? '#'}
+              href={botLink || 'https://t.me/ruliouzbot?start=login'}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${styles.telegramBtn} ${!botLink ? styles.telegramBtnDisabled : ''}`}
-              aria-disabled={!botLink}
+              className={styles.telegramBtn}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -137,11 +136,7 @@ export default function LoginPage() {
                   d="M21.94 4.3a1.2 1.2 0 0 0-1.62-1.36L2.9 9.66c-.98.38-.97 1.77.02 2.13l4.34 1.57 1.66 5.3c.2.66 1.03.87 1.52.38l2.43-2.4 4.53 3.33c.67.5 1.63.13 1.8-.69zM9.9 14.1l-.43 3.32-1.2-3.86 9.88-7.04z"
                 />
               </svg>
-              {botLink
-                ? t('Telegram botdan kod olish', 'Получить код в боте')
-                : unavailable
-                ? t('Bot hali ulanmagan', 'Бот ещё не подключён')
-                : t('Yuklanmoqda…', 'Загрузка…')}
+              {t('Telegram botdan kod olish', 'Получить код в боте')}
             </a>
 
             <p className={styles.codeHint}>

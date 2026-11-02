@@ -146,7 +146,11 @@ export async function telegram<T = unknown>(method: string, body?: Record<string
 let cachedBotUsername: string | null = null;
 
 export async function getBotUsername(): Promise<string | null> {
-  if (process.env.TELEGRAM_BOT_USERNAME) return process.env.TELEGRAM_BOT_USERNAME.replace(/^@/, '');
+  const envVal = process.env.TELEGRAM_BOT_USERNAME;
+  if (envVal) {
+    const clean = envVal.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '').replace(/\/$/, '').trim();
+    if (clean) return clean;
+  }
   if (cachedBotUsername) return cachedBotUsername;
   const me = await telegram<{ username: string }>('getMe');
   cachedBotUsername = me?.username ?? null;
