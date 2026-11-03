@@ -12,11 +12,11 @@ type Pair = [string, string];
 const ALL: Pair = ['Barcha 63 bilet', 'Все 63 билета'];
 const MIS: Pair = ['Xatolar tahlili', 'Разбор ошибок'];
 const RND: Pair = ['Random test butun bazadan', 'Случайный тест по всей базе'];
-const STA: Pair = ['Batafsil statistika', 'Подробная статистика'];
+const SAV: Pair = ['Saqlangan savollar va natijalar', 'Сохранённые вопросы и результаты'];
 const plans: { id: PlanId; name: Pair; days: number; price: number; popular?: boolean; features: Pair[] }[] = [
   { id: '2_week', name: ['2 hafta', '2 недели'], days: 14, price: 15000, features: [ALL, MIS, RND] },
-  { id: '1_month', name: ['1 oy', '1 месяц'], days: 30, price: 25000, popular: true, features: [ALL, MIS, RND, STA] },
-  { id: '3_month', name: ['3 oy', '3 месяца'], days: 90, price: 59000, features: [ALL, MIS, RND, STA, ['Avtomaktab davri uchun', 'На весь период автошколы']] },
+  { id: '1_month', name: ['1 oy', '1 месяц'], days: 30, price: 25000, popular: true, features: [ALL, MIS, RND, SAV] },
+  { id: '3_month', name: ['3 oy', '3 месяца'], days: 90, price: 59000, features: [ALL, MIS, RND, SAV, ['Avtomaktab davri uchun', 'На весь период автошколы']] },
 ];
 
 const fmt = (n: number) => n.toLocaleString('ru-RU').replace(/,/g, ' ');

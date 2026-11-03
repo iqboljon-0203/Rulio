@@ -36,9 +36,9 @@ const faqData = [
   },
   {
     q: "To'lov qanday amalga oshiriladi?",
-    a: "Payme yoki Click orqali to'laysiz. To'lov o'tgach, Premium tarif avtomatik faollashadi.",
+    a: "Tarifni tanlaganingizda sizga alohida summa beriladi (masalan 25 001 so'm). Shu summani istalgan bank ilovasidan kartaga o'tkazasiz va Premium avtomatik faollashadi.",
     qRu: "Как происходит оплата?",
-    aRu: "Оплата через Payme или Click. После оплаты Premium включается автоматически.",
+    aRu: "При выборе тарифа вы получаете уникальную сумму (например, 25 001 сум). Переведите её на карту из любого банковского приложения — Premium включится автоматически.",
   },
 ];
 
@@ -48,15 +48,15 @@ const F = {
   stats: ['Asosiy statistika', 'Базовая статистика'] as Pair,
   all: ['Barcha 63 bilet', 'Все 63 билета'] as Pair,
   mist: ['Xatolar tahlili', 'Разбор ошибок'] as Pair,
-  full: ['Batafsil statistika', 'Подробная статистика'] as Pair,
-  noads: ['Reklamasiz', 'Без рекламы'] as Pair,
+  long1: ['Imtihongacha 1 oy mashq', 'Месяц подготовки'] as Pair,
+  long3: ['Avtomaktab davri uchun', 'На весь период автошколы'] as Pair,
   rand: ['Random test butun bazadan', 'Случайный тест по всей базе'] as Pair,
 };
 const plans: { name: Pair; price: number; days: number | null; per: number | null; features: Pair[]; cta: Pair; variant: 'ghost' | 'accent' | 'secondary'; popular?: boolean }[] = [
   { name: ['Bepul', 'Бесплатно'], price: 0, days: null, per: null, features: [F.five, F.stats], cta: ['Boshlash', 'Начать'], variant: 'ghost' },
-  { name: ['2 hafta', '2 недели'], price: 15000, days: 14, per: 1071, features: [F.all, F.mist, F.rand, F.noads], cta: ['Sotib olish', 'Купить'], variant: 'secondary' },
-  { name: ['1 oy', '1 месяц'], price: 25000, days: 30, per: 833, features: [F.all, F.mist, F.rand, F.full, F.noads], cta: ['Sotib olish', 'Купить'], variant: 'accent', popular: true },
-  { name: ['3 oy', '3 месяца'], price: 59000, days: 90, per: 656, features: [F.all, F.mist, F.rand, F.full, F.noads], cta: ['Sotib olish', 'Купить'], variant: 'secondary' },
+  { name: ['2 hafta', '2 недели'], price: 15000, days: 14, per: 1071, features: [F.all, F.mist, F.rand], cta: ['Sotib olish', 'Купить'], variant: 'secondary' },
+  { name: ['1 oy', '1 месяц'], price: 25000, days: 30, per: 833, features: [F.all, F.mist, F.rand, F.long1], cta: ['Sotib olish', 'Купить'], variant: 'accent', popular: true },
+  { name: ['3 oy', '3 месяца'], price: 59000, days: 90, per: 656, features: [F.all, F.mist, F.rand, F.long3], cta: ['Sotib olish', 'Купить'], variant: 'secondary' },
 ];
 
 // Structured data for Google (organization, site, product with prices, FAQ rich results)
@@ -364,7 +364,7 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-          <p className={styles.payNote}>{t("To'lov Payme yoki Click orqali, to'lovdan keyin tarif darhol faollashadi.", 'Оплата через Payme или Click, тариф включается сразу после оплаты.')}</p>
+          <p className={styles.payNote}>{t("Karta orqali (Uzcard, Humo) istalgan bank ilovasidan — to'lovdan keyin tarif avtomatik faollashadi.", 'Оплата переводом на карту из любого банковского приложения — тариф включается автоматически.')}</p>
         </section>
 
         {/* ===== SEO TEXT ===== */}
@@ -392,7 +392,7 @@ export default function LandingPage() {
                 <h3>3 tilda: o&apos;zbek, ўзбек, русский</h3>
                 <p>
                   Testlarni lotin yoki kirill alifbosida yeching. Йўл ҳаракати қоидалари бўйича тестлар кирилл
-                  алифбосида ҳам бор. Тесты ПДД Узбекистана 2026 года доступны и на русском языке.
+                  алифбосида ҳам бор. Интерфейс доступен на русском языке.
                 </p>
               </div>
             </div>
