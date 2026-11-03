@@ -51,7 +51,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'empty_sms_text' }, { status: 400 });
   }
 
-  console.log(`[SMS Webhook] Kelgan SMS (${fromSender}):`, bodyText);
+  // Only incoming credits may activate a plan. Banks send OTP codes, debits ("kartadan … yechilmoqda"),
+  // purchases and ads from the same sender — ignore those and never log their text.
+  if (isNotIncoming(bodyText)) {
+    return NextResponse.json({ ok: true, ignored: true, reason: 'not_incoming' });
+  }
+  console.log(`[SMS Webhook] Kirim SMS (${fromSender}):`, bodyText.slice(0, 200));
 
   // Bank SMS usually contain several sums (transfer, balance, fee). Only an amount that
   // matches a pending unique request (e.g. 25 001) activates a plan.
@@ -93,4 +98,13 @@ function sameSecret(a: string | null | undefined, b: string): boolean {
   let r = 0;
   for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return r === 0;
+}
+
+const NOT_INCOMING = [
+  /kodni|\bkod\b|parol|tasdiqlash|sms-?kod|код|пароль|code/i, // one-time codes
+  /kartadan|yechil|yechib|списан|снят|spisan|pokupka|покупка|xarid|оплата|oplata|to['ʻ’]?lov qilindi/i, // debits
+  /mikroqarz|kredit|aksiya|chegirma|https?:\/\/|bit\.ly/i, // ads
+];
+function isNotIncoming(text: string) {
+  return NOT_INCOMING.some((re) => re.test(text));
 }
