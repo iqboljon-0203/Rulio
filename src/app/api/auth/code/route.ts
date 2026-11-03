@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSessionToken, getBotToken, SESSION_COOKIE, SESSION_MAX_AGE, TelegramUser } from '@/lib/auth';
-import { kvGet, kvSet, kvDel } from '@/lib/store';
+import { kvGet, kvSet, kvDel, kvIncrTtl } from '@/lib/store';
 
 // PUT: Registers an OTP code (from bot / webhook)
 export async function PUT(request: Request) {
@@ -25,6 +25,13 @@ export async function PUT(request: Request) {
 
 // POST: Verifies an OTP code (from /login web page)
 export async function POST(request: Request) {
+  // Brute-force guard: max 8 attempts per IP per 10 minutes.
+  const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() || 'unknown';
+  const tries = await kvIncrTtl(`otp_try:${ip}`, 600);
+  if (tries > 8) {
+    return NextResponse.json({ ok: false, error: "Juda ko'p urinish. 10 daqiqadan keyin qayta urinib ko'ring." }, { status: 429 });
+  }
+
   const { code } = (await request.json().catch(() => ({}))) as { code?: string };
   const clean = (code || '').trim().replace(/\D/g, '');
 

@@ -24,7 +24,17 @@ export async function POST(request: Request) {
   const user = await sessionFromRequest(request);
   if (!user) return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
 
-  const body = (await request.json().catch(() => ({}))) as Partial<UserSyncData>;
+  const raw = await request.text().catch(() => '');
+  if (raw.length > 300_000) return NextResponse.json({ ok: false, error: 'too_large' }, { status: 413 });
+  let body: Partial<UserSyncData> = {};
+  try {
+    body = JSON.parse(raw || '{}');
+  } catch {
+    return NextResponse.json({ ok: false, error: 'bad_json' }, { status: 400 });
+  }
+  if (body.ticketResults && Object.keys(body.ticketResults).some((k) => !/^\d{1,2}$/.test(k))) {
+    return NextResponse.json({ ok: false, error: 'bad_data' }, { status: 400 });
+  }
   const key = `user:${user.telegramId}:sync`;
   const existing = (await kvGet<UserSyncData>(key)) ?? {
     ticketResults: {},

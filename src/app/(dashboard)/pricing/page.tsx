@@ -21,6 +21,17 @@ const plans: { id: PlanId; name: Pair; days: number; price: number; popular?: bo
 
 const fmt = (n: number) => n.toLocaleString('ru-RU').replace(/,/g, ' ');
 
+interface P2P {
+  amount: number;
+  plan: PlanId;
+  expiresAt: number;
+  card: string;
+  holder: string;
+  admin: string;
+  providers: { payme: boolean; click: boolean };
+  baseExpiry: number; // subscription expiry before paying, to detect activation
+}
+
 interface Me {
   premium: boolean;
   subscription: { plan: PlanId; expiresAt: number } | null;
@@ -35,6 +46,9 @@ export default function PricingPage() {
   const [waiting, setWaiting] = useState<string | null>(null); // order id being paid
   const [paid, setPaid] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [p2p, setP2p] = useState<P2P | null>(null);
+  const [copiedAmount, setCopiedAmount] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
   const { t } = useLocale();
 
   const loadMe = useCallback(() => {
@@ -73,6 +87,59 @@ export default function PricingPage() {
     }, 3000);
     return () => clearInterval(timer);
   }, [waiting, loadMe]);
+
+  const choose = async (plan: PlanId) => {
+    setSelected(plan);
+    setP2p(null);
+    setError(null);
+    setCopied(false);
+    setCopiedAmount(false);
+    try {
+      const res = await fetch('/api/payments/p2p', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json();
+      if (res.status === 401) throw new Error(t('Avval tizimga kiring.', 'Сначала войдите.'));
+      if (!res.ok) throw new Error(data.error || t("To'lov ma'lumotini olib bo'lmadi", 'Не удалось получить данные для оплаты'));
+      setP2p({ ...data, baseExpiry: me?.subscription?.expiresAt ?? 0 });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("To'lov ma'lumotini olib bo'lmadi", 'Не удалось получить данные для оплаты'));
+      setSelected(null);
+    }
+  };
+
+  // While the card modal is open: tick the countdown and watch for the automatic activation.
+  useEffect(() => {
+    if (!p2p || !selected) return;
+    const tick = setInterval(() => setNow(Date.now()), 1000);
+    const poll = setInterval(async () => {
+      const r = await fetch('/api/payments/p2p').catch(() => null);
+      const d = r?.ok ? await r.json() : null;
+      if (d?.subscription && d.subscription.expiresAt > p2p.baseExpiry) {
+        setPaid(true);
+        setSelected(null);
+        setP2p(null);
+        loadMe();
+      }
+    }, 4000);
+    return () => {
+      clearInterval(tick);
+      clearInterval(poll);
+    };
+  }, [p2p, selected, loadMe]);
+
+  const copy = (text: string, which: 'card' | 'amount') => {
+    navigator.clipboard?.writeText(text).catch(() => {});
+    if (which === 'card') {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } else {
+      setCopiedAmount(true);
+      setTimeout(() => setCopiedAmount(false), 2000);
+    }
+  };
 
   const checkout = async (provider: 'payme' | 'click') => {
     if (!selected) return;
@@ -147,7 +214,7 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            <Button variant={plan.popular ? 'accent' : 'secondary'} onClick={() => setSelected(plan.id)}>
+            <Button variant={plan.popular ? 'accent' : 'secondary'} onClick={() => choose(plan.id)}>
               {t('Tanlash', 'Выбрать')}
             </Button>
           </div>
@@ -157,63 +224,78 @@ export default function PricingPage() {
       {selected && (
         <div className={styles.providerModal} onClick={() => setSelected(null)}>
           <div className={styles.modalCard} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
-            <h2 className={styles.modalTitle}>{t("To'lov qilish", 'Оплата')}</h2>
+            <h2 className={styles.modalTitle}>{t("Karta orqali to'lov", 'Оплата картой')}</h2>
             <p className={styles.modalSub}>
-              Premium {t(...plans.find((p) => p.id === selected)!.name)} · {fmt(plans.find((p) => p.id === selected)!.price)} {t("so'm", 'сум')}
+              Premium {t(...plans.find((p) => p.id === selected)!.name)}
             </p>
 
-            <div className={styles.cardBox}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardBankLabel}>Uzcard / Humo</span>
-                <span className={styles.cardAmountTag}>{fmt(plans.find((p) => p.id === selected)!.price)} so&apos;m</span>
-              </div>
-              <div className={styles.cardNumberRow}>
-                <span className={styles.cardNumber}>5614 6818 0663 9203</span>
-                <button
-                  type="button"
-                  className={styles.copyBtn}
-                  onClick={() => {
-                    navigator.clipboard.writeText('5614681806639203');
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
-                  }}
-                >
-                  {copied ? '✓ Nusxalandi' : 'Nusxa olish'}
-                </button>
-              </div>
-              <div className={styles.cardHolder}>IQBOLJON YULDASHEV</div>
-            </div>
+            {!p2p ? (
+              <p className={styles.modalSub}>{t('Yuklanmoqda…', 'Загрузка…')}</p>
+            ) : p2p.expiresAt <= now ? (
+              <>
+                <p className={`${styles.banner} ${styles.bannerErr}`}>
+                  {t("Vaqt tugadi. Yangi summa olish uchun qayta bosing.", 'Время вышло. Нажмите ещё раз, чтобы получить новую сумму.')}
+                </p>
+                <Button variant="accent" onClick={() => choose(selected)}>{t('Yangilash', 'Обновить')}</Button>
+              </>
+            ) : (
+              <>
+                <div className={styles.cardBox}>
+                  <div className={styles.cardHeader}>
+                    <span className={styles.cardBankLabel}>{t("Aynan shu summani o'tkazing", 'Переведите ровно эту сумму')}</span>
+                    <span className={styles.cardAmountTag}>
+                      {Math.floor((p2p.expiresAt - now) / 60000)}:{String(Math.floor(((p2p.expiresAt - now) % 60000) / 1000)).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <div className={styles.cardNumberRow}>
+                    <span className={styles.cardNumber}>{fmt(p2p.amount)} {t("so'm", 'сум')}</span>
+                    <button type="button" className={styles.copyBtn} onClick={() => copy(String(p2p.amount), 'amount')}>
+                      {copiedAmount ? '✓' : t('Nusxa', 'Копировать')}
+                    </button>
+                  </div>
+                  <div className={styles.cardNumberRow}>
+                    <span className={styles.cardNumber}>{p2p.card}</span>
+                    <button type="button" className={styles.copyBtn} onClick={() => copy(p2p.card.replace(/\s/g, ''), 'card')}>
+                      {copied ? '✓' : t('Nusxa', 'Копировать')}
+                    </button>
+                  </div>
+                  <div className={styles.cardHolder}>{p2p.holder}</div>
+                </div>
 
-            <div className={styles.instructions}>
-              <p><b>1.</b> Istalgan bank ilovasidan (Click, Payme, Uzum va h.k.) kartaga to&apos;lov qiling.</p>
-              <p><b>2.</b> To&apos;lov chekini Telegram orqali adminga yuboring.</p>
-              <p><b>3.</b> 5 daqiqa ichida tarifingiz faollashadi.</p>
-            </div>
+                <div className={styles.instructions}>
+                  <p><b>1.</b> {t("Istalgan bank ilovasidan (Click, Payme, Uzum va h.k.) kartaga o'tkazing.", 'Переведите на карту из любого банковского приложения.')}</p>
+                  <p><b>2.</b> {t(`Summa aynan ${fmt(p2p.amount)} so'm bo'lsin — shu bilan to'lov sizga bog'lanadi.`, `Сумма должна быть ровно ${fmt(p2p.amount)} сум — по ней платёж привязывается к вам.`)}</p>
+                  <p><b>3.</b> {t("Tarif avtomatik ochiladi, shu oynani yopmasangiz ham bo'ladi.", 'Тариф включится автоматически.')}</p>
+                </div>
 
-            <a
-              href={`https://t.me/musulman_0201?text=${encodeURIComponent(`Assalomu alaykum! Men Rulio'da Premium ${plans.find((p) => p.id === selected)!.name[0]} (${fmt(plans.find((p) => p.id === selected)!.price)} so'm) tarifiga to'lov qildim. Chekni biriktiryapman.`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.telegramSendBtn}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M21.94 4.3a1.2 1.2 0 0 0-1.62-1.36L2.9 9.66c-.98.38-.97 1.77.02 2.13l4.34 1.57 1.66 5.3c.2.66 1.03.87 1.52.38l2.43-2.4 4.53 3.33c.67.5 1.63.13 1.8-.69zM9.9 14.1l-.43 3.32-1.2-3.86 9.88-7.04z" />
-              </svg>
-              Chekni Telegram&apos;ga yuborish
-            </a>
+                <p className={styles.modalSub}>
+                  {t("To'lov kutilmoqda…", 'Ожидаем оплату…')}{' '}
+                  <a href={`https://t.me/${p2p.admin}`} target="_blank" rel="noopener noreferrer">
+                    {t("Muammo bo'lsa, adminga yozing", 'Проблема? Напишите админу')}
+                  </a>
+                </p>
 
-            <div className={styles.divider}>
-              <span>yoki avtomatik to&apos;lov</span>
-            </div>
-
-            <div className={styles.providerGrid}>
-              <button className={`${styles.payBtn} ${styles.paymeBtn}`} disabled={loading} onClick={() => checkout('payme')}>
-                Payme
-              </button>
-              <button className={`${styles.payBtn} ${styles.clickBtn}`} disabled={loading} onClick={() => checkout('click')}>
-                Click
-              </button>
-            </div>
+                {(p2p.providers.payme || p2p.providers.click) && (
+                  <>
+                    <div className={styles.divider}>
+                      <span>{t('yoki', 'или')}</span>
+                    </div>
+                    <div className={styles.providerGrid}>
+                      {p2p.providers.payme && (
+                        <button className={`${styles.payBtn} ${styles.paymeBtn}`} disabled={loading} onClick={() => checkout('payme')}>
+                          Payme
+                        </button>
+                      )}
+                      {p2p.providers.click && (
+                        <button className={`${styles.payBtn} ${styles.clickBtn}`} disabled={loading} onClick={() => checkout('click')}>
+                          Click
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
 
             <Button variant="ghost" onClick={() => setSelected(null)}>
               {t('Yopish', 'Закрыть')}

@@ -3,9 +3,12 @@ import { kvGet, kvSet, kvDel } from './store';
 import { PLANS, type PaidPlan, getSubscription } from './billing';
 import { telegram } from './auth';
 
-export const CARD_NUMBER = '5614681806639203';
-export const CARD_HOLDER = 'IQBOLJON YULDASHEV';
-export const ADMIN_TG_ID = 1332582307;
+// Set these in Vercel → Environment Variables. The fallbacks keep the current setup working.
+export const CARD_NUMBER = (process.env.P2P_CARD_NUMBER || '5614681806639203').replace(/\s/g, '');
+export const CARD_HOLDER = process.env.P2P_CARD_HOLDER || 'IQBOLJON YULDASHEV';
+export const ADMIN_TG_ID = Number(process.env.ADMIN_TG_ID || 1332582307);
+export const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || 'musulman_0201').replace(/^@/, '');
+export const cardPretty = () => CARD_NUMBER.replace(/(\d{4})(?=\d)/g, '$1 ');
 
 export interface P2PPaymentRequest {
   id: string;
@@ -100,6 +103,18 @@ export function parseSmsAmount(smsText: string): number | null {
   return null;
 }
 
+/** All UZS amounts mentioned in an SMS (transfer amount, balance, fee…). */
+export function parseSmsAmounts(smsText: string): number[] {
+  const s = (smsText || '').toLowerCase().replace(/\s+/g, ' ');
+  const out: number[] = [];
+  for (const m of s.matchAll(/(\d[\d\s,.]*?)\s*(?:uzs|so'?m|sum)/gi)) {
+    const raw = m[1].replace(/\s/g, '').replace(/[.,]\d{2}$/, '').replace(/[,.]/g, '');
+    const n = parseInt(raw, 10);
+    if (!isNaN(n) && n >= 10000 && n <= 2000000 && !out.includes(n)) out.push(n);
+  }
+  return out;
+}
+
 /** Fulfills payment by exact received amount, activating subscription and notifying user + admin. */
 export async function fulfillP2PPayment(amount: number, rawSms = ''): Promise<{ success: boolean; request?: P2PPaymentRequest; message: string }> {
   const req = await kvGet<P2PPaymentRequest>(`p2p_amt:${amount}`);
@@ -120,6 +135,7 @@ export async function fulfillP2PPayment(amount: number, rawSms = ''): Promise<{ 
   await kvSet(`sub:${req.tgId}`, sub);
   await kvDel(`p2p_amt:${amount}`);
   await kvSet(`p2p_paid:${req.id}`, { ...req, state: 'paid', paidAt: Date.now(), rawSms });
+  await kvSet(`p2p_user:${req.tgId}`, { ...req, state: 'paid' });
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://rulio.uz';
 

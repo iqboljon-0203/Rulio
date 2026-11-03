@@ -1,31 +1,10 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const { testType, ticketNumber, totalQuestions, correctAnswers, wrongAnswers, timeSpent } = body;
+// Old demo endpoint with fake data; results are kept in /api/user/sync now.
+export function GET() {
+  return NextResponse.json({ error: 'gone' }, { status: 410 });
+}
 
-    const passed = correctAnswers >= 18;
-    const resultId = `res-${Date.now()}`;
-
-    return NextResponse.json({
-      success: true,
-      result: {
-        id: resultId,
-        testType,
-        ticketNumber,
-        totalQuestions,
-        correctAnswers,
-        wrongAnswers,
-        passed,
-        timeSpent,
-        createdAt: Date.now(),
-      },
-    });
-  } catch {
-    return NextResponse.json(
-      { error: "Natijani saqlashda xatolik yuz berdi" },
-      { status: 500 }
-    );
-  }
+export function POST() {
+  return NextResponse.json({ error: 'gone' }, { status: 410 });
 }

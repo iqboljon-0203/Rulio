@@ -206,7 +206,8 @@ export async function sessionFromRequest(request: Request): Promise<SessionUser 
 /** Generates a random 6-digit OTP code for Telegram login. */
 export async function createOtpCode(user: TelegramUser): Promise<string> {
   const { kvSet } = await import('./store');
-  const code = String(Math.floor(100000 + Math.random() * 900000));
+  const rnd = crypto.getRandomValues(new Uint32Array(1))[0];
+  const code = String(100000 + (rnd % 900000));
   await kvSet(`otp:${code}`, {
     user,
     exp: Math.floor(Date.now() / 1000) + 600, // 10 minutes

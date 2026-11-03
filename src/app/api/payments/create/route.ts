@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createLoginToken, sessionFromRequest } from '@/lib/auth';
+import { sessionFromRequest } from '@/lib/auth';
+import { kvSet } from '@/lib/store';
 import { createOrder, PLANS, type PaidPlan } from '@/lib/billing';
 
 // Creates an order for the signed-in user and returns the Payme / Click checkout URL.
@@ -13,10 +14,12 @@ export async function POST(request: Request) {
   }
 
   const order = await createOrder(user.telegramId, plan as PaidPlan, provider);
-  const returnToken = await createLoginToken({
-    id: user.telegramId,
-    first_name: user.name,
-    username: user.username,
+  // One-time return token (stored server-side, valid 30 min, deleted on first use):
+  // signs the user back in if Payme/Click returns to a browser without the session cookie.
+  const returnToken = crypto.randomUUID().replace(/-/g, '');
+  await kvSet(`rt:${returnToken}`, {
+    user: { id: user.telegramId, first_name: user.name, username: user.username },
+    exp: Date.now() + 30 * 60 * 1000,
   });
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;

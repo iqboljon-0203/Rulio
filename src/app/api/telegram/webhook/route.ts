@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server';
 import { createLoginToken, telegram, webhookSecret, type TelegramUser } from '@/lib/auth';
 import { describeSubscription, getSubscription, PLANS, FREE_TICKETS, type PaidPlan } from '@/lib/billing';
 import { kvSet } from '@/lib/store';
+import { ADMIN_TG_ID, ADMIN_USERNAME, CARD_HOLDER, CARD_NUMBER } from '@/lib/p2p';
 
 interface TgUpdate {
   message?: {
+    message_id?: number;
     chat: { id: number; type?: string };
     from?: TelegramUser & { is_bot?: boolean; language_code?: string };
     text?: string;
@@ -46,7 +48,7 @@ function getTarifSelector() {
     `✅ Haqiqiy imtihon simulyatori (tasodifiy test)\n` +
     `✅ Xatolar ustida ishlash bo'limi\n` +
     `✅ Saqlangan savollar va to'liq statistika\n` +
-    `✅ Har bir savolga audio tushuntirishlar\n\n` +
+    `✅ Har bir savolga YHQ bandi bilan izoh\n\n` +
     `👇 <i>To'lov qilish uchun quyidagi tariflardan birini tanlang:</i>`;
 
   const inline_keyboard = [
@@ -68,14 +70,14 @@ function getPaymentCardMessage(planKey: PaidPlan, exactAmount?: number, offset?:
     `💳 <b>Balans to'ldirish (Avto-to'lov)</b>\n\n` +
     `💰 <b>O'tkazish summasi:</b> <code>${amount}</code> so'm <i>(nusxalash uchun bosing)</i>\n` +
     `🎁 <b>Tarif:</b> Premium ${plan.name} (${plan.days} kun)\n\n` +
-    `🔢 <b>Karta raqami:</b> <code>5614681806639203</code> <i>(nusxalash uchun bosing)</i>\n` +
-    `👤 <b>Karta egasi:</b> IQBOLJON YULDASHEV\n\n` +
+    `🔢 <b>Karta raqami:</b> <code>${CARD_NUMBER}</code> <i>(nusxalash uchun bosing)</i>\n` +
+    `👤 <b>Karta egasi:</b> ${CARD_HOLDER}\n\n` +
     `⚠️ <b>DIQQAT:</b> Aynan ko'rsatilgan <b>${formattedPrice} so'm</b>ni o'tkazing${offset ? ` (${offset} so'm kam ham, ko'p ham emas)` : ''}!\n` +
     `⚡ <i>To'lov amalga oshishi bilan tarifingiz 1 soniyada avtomatik faollashtiriladi.</i>`;
 
   const inline_keyboard = [
     [{ text: '🔄 To\'lovni tekshirish', callback_data: `check_${planKey}` }],
-    [{ text: '📸 Chek yuborish', url: 'https://t.me/musulman_0201' }],
+    [{ text: '📸 Chek yuborish', url: `https://t.me/${ADMIN_USERNAME}` }],
     [
       { text: '◀️ Orqaga', callback_data: 'menu_tarifs' },
       { text: '🏠 Asosiy menyu', callback_data: 'menu_main' },
@@ -133,7 +135,7 @@ export async function POST(request: Request) {
         } else {
           await telegram('answerCallbackQuery', {
             callback_query_id: cb.id,
-            text: `⏳ To'lovingiz kutilmoqda. Agar to'lov qilgan bo'lsangiz, "📸 Chek yuborish" orqali chekni yuboring yoki adminga (@musulman_0201) yozing.`,
+            text: `⏳ To'lovingiz kutilmoqda. Agar to'lov qilgan bo'lsangiz, "📸 Chek yuborish" orqali chekni yuboring yoki adminga (@${ADMIN_USERNAME}) yozing.`,
             show_alert: true,
           });
         }
@@ -192,12 +194,14 @@ export async function POST(request: Request) {
     const token = await createLoginToken({ id, first_name, last_name, username });
     const link = `${origin}/auth/telegram?token=${encodeURIComponent(token ?? '')}`;
 
-    if (cmd === '/grant' && (id === 1332582307 || username === 'musulman_0201')) {
+    if (cmd === '/grant' && id === ADMIN_TG_ID) {
       const parts = text.split(/\s+/);
       const targetId = Number(parts[1]);
       const planKey = (parts[2] || '1_month') as PaidPlan;
       if (targetId && PLANS[planKey]) {
-        const start = Date.now();
+        // Extend from the current expiry so remaining days are not lost.
+        const current = await getSubscription(targetId);
+        const start = Math.max(Date.now(), current?.expiresAt ?? 0);
         const sub = { plan: planKey, expiresAt: start + PLANS[planKey].days * 86_400_000 };
         await kvSet(`sub:${targetId}`, sub);
         await telegram('sendMessage', {
@@ -211,17 +215,21 @@ export async function POST(request: Request) {
         });
         return NextResponse.json({ ok: true });
       }
-    } else if (msg.photo || msg.document || (/chek|to'ladim|toladim|to'lov|tolov/i.test(text) && !/mening|tarif/i.test(text))) {
+    } else if (msg.photo || msg.document || /\bchek\b|to['ʻ’]?ladim|o['ʻ’]?tkazdim|pul tashladim/i.test(text)) {
       await telegram('sendMessage', {
         chat_id,
         text:
           `✅ To'lov chekingiz qabul qilindi!\n\n` +
-          `Admin (@musulman_0201) to'lovni tekshirib, 5–10 daqiqa ichida Premium tarifingizni faollashtirib beradi.`,
+          `Admin (@${ADMIN_USERNAME}) to'lovni tekshirib, 5–10 daqiqa ichida Premium tarifingizni faollashtirib beradi.`,
         reply_markup: MENU,
       });
-      if (id !== 1332582307) {
+      if (id !== ADMIN_TG_ID) {
+        // Forward the receipt itself so the admin can actually see it.
+        if (msg.message_id && (msg.photo || msg.document)) {
+          await telegram('forwardMessage', { chat_id: ADMIN_TG_ID, from_chat_id: chat_id, message_id: msg.message_id }).catch(() => null);
+        }
         await telegram('sendMessage', {
-          chat_id: 1332582307,
+          chat_id: ADMIN_TG_ID,
           text: `🔔 Yangi to'lov cheki keldi!\nFoydalanuvchi: ${first_name} ${last_name || ''} (@${username || 'yo\'q'}, ID: ${id})\n\nTarifni yoqish uchun bosing: /grant ${id} 1_month`,
         }).catch(() => null);
       }
@@ -299,7 +307,7 @@ export async function POST(request: Request) {
           `/tarif — Tariflar va narxlar\n` +
           `/login — Saytga kirish havolasi / kodi\n` +
           `/status — Mening tarifim\n\n` +
-          `To'lov bo'yicha savol bo'lsa (pul o'tkazildi, tarif ochilmadi), to'lov chekining skrinshotini shu yerga yuboring yoki adminga yozing: @musulman_0201`,
+          `To'lov bo'yicha savol bo'lsa (pul o'tkazildi, tarif ochilmadi), to'lov chekining skrinshotini shu yerga yuboring yoki adminga yozing: @${ADMIN_USERNAME}`,
         reply_markup: MENU,
       });
     } else {

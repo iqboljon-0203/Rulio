@@ -20,18 +20,24 @@ const OPPONENT_POOL: Opponent[] = [
   { name: 'Rulio AI (Ekspert)', avatar: '🏆', rating: 1420, city: 'AI Bot' },
 ];
 
-const LEADERBOARD_DATA = [
-  { rank: 1, name: 'Temur_Pro', points: '1,840', winrate: '88%', avatar: 'T' },
-  { rank: 2, name: 'Anvar_GAI', points: '1,720', winrate: '82%', avatar: 'A' },
-  { rank: 3, name: 'Zilola_01', points: '1,650', winrate: '79%', avatar: 'Z' },
-  { rank: 4, name: 'Bobur_BMW', points: '1,590', winrate: '74%', avatar: 'B' },
-  { rank: 5, name: 'Sardor_Avto', points: '1,240', winrate: '68%', avatar: 'S' },
-];
 
 export default function OctagonPage() {
   const [gameState, setGameState] = useState<'lobby' | 'matchmaking' | 'battle' | 'result'>('lobby');
   const [selectedMode, setSelectedMode] = useState<'1v1' | 'tournament' | 'custom'>('1v1');
-  const [myRating, setMyRating] = useState(1240);
+  const [myRating, setMyRating] = useState(1000);
+
+  // Practice rating against the AI is personal and kept on this device.
+  useEffect(() => {
+    try {
+      const v = Number(localStorage.getItem('rulio_octagon_elo'));
+      if (v >= 1000) setMyRating(v);
+    } catch {}
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem('rulio_octagon_elo', String(myRating));
+    } catch {}
+  }, [myRating]);
   const [opponent, setOpponent] = useState<Opponent>(OPPONENT_POOL[0]);
 
   // Battle State
@@ -198,7 +204,7 @@ export default function OctagonPage() {
               <div className={styles.userRankCard}>
                 <span className={styles.rankIcon}>🏆</span>
                 <div className={styles.rankMeta}>
-                  <span className={styles.rankLabel}>Sizning Reytingingiz</span>
+                  <span className={styles.rankLabel}>Mashq reytingingiz</span>
                   <span className={styles.rankScore}>{myRating} ELO</span>
                 </div>
               </div>
@@ -288,26 +294,12 @@ export default function OctagonPage() {
           <div className={styles.bottomSectionGrid}>
             <div className={styles.panelCard}>
               <div className={styles.panelHeader}>
-                <h2 className={styles.panelTitle}>🏆 Octagon Yetakchilar Jadvali</h2>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#7C3AED' }}>Haftalik Liga</span>
+                <h2 className={styles.panelTitle}>🏆 Yetakchilar jadvali</h2>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#7C3AED' }}>Tez kunda</span>
               </div>
-              <div className={styles.leaderList}>
-                {LEADERBOARD_DATA.map((item) => (
-                  <div key={item.rank} className={styles.leaderItem}>
-                    <div className={styles.leaderLeft}>
-                      <span className={`${styles.leaderRank} ${item.rank === 1 ? styles.rankTop1 : item.rank === 2 ? styles.rankTop2 : item.rank === 3 ? styles.rankTop3 : ''}`}>
-                        #{item.rank}
-                      </span>
-                      <div className={styles.leaderAvatar}>{item.avatar}</div>
-                      <div>
-                        <p className={styles.leaderName}>{item.name}</p>
-                        <p className={styles.leaderWinrate}>G&apos;alaba: {item.winrate}</p>
-                      </div>
-                    </div>
-                    <span className={styles.leaderPoints}>{item.points} ball</span>
-                  </div>
-                ))}
-              </div>
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                Jadval jonli bellashuvlar ishga tushganda ochiladi. Hozircha AI raqib bilan mashq qiling — reytingingiz shu qurilmada saqlanadi.
+              </p>
             </div>
 
             <div className={styles.panelCard}>
@@ -315,8 +307,7 @@ export default function OctagonPage() {
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                 <li>⚡ <strong>Tezlik ahamiyatli:</strong> To&apos;g&apos;ri javob berish bilan birga, qancha tez bosganingizga qarab bonus ballar beriladi.</li>
                 <li>🎯 <strong>Aniqlik:</strong> Noto&apos;g&apos;ri javob bergan taqdirda ushbu savoldan 0 ball olasiz.</li>
-                <li>📈 <strong>Reyting (ELO):</strong> G&apos;alaba qozonsangiz +25 reyting ball olasiz, mag&apos;lub bo&apos;lsangiz reytingingiz kamayadi.</li>
-                <li>🥇 <strong>Haftalik Mukofot:</strong> Top 3 talikka kirgan haydovchilarga Rulio PRO obunasi sovg&apos;a qilinadi.</li>
+                <li>📈 <strong>Mashq reytingi:</strong> AI raqibni yutsangiz +25, yutqazsangiz −15 ball. Reyting faqat shu qurilmada saqlanadi.</li>
               </ul>
             </div>
           </div>
@@ -330,8 +321,8 @@ export default function OctagonPage() {
             <div className={styles.radarCenter}>⚔️</div>
           </div>
           <div>
-            <h2 className={styles.matchmakingTitle}>Raqib qidirilmoqda...</h2>
-            <p className={styles.matchmakingSub}>Onlayn haydovchilar orasidan reytingingizga mos raqib tanlanmoqda</p>
+            <h2 className={styles.matchmakingTitle}>AI raqib tayyorlanmoqda...</h2>
+            <p className={styles.matchmakingSub}>Reytingingizga mos darajadagi Rulio AI tanlanmoqda</p>
           </div>
 
           <div className={styles.vsContainer}>

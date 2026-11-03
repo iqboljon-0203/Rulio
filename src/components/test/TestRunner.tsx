@@ -177,18 +177,6 @@ export function TestRunner({ mode, ticketNumber, loadQuestions, initialState }: 
       syncUserData({ ticketResults: currentResults, mistakes: merged }).catch(() => {});
     } catch {}
 
-    fetch('/api/test/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        testType: mode,
-        ticketNumber,
-        totalQuestions: questions.length,
-        correctAnswers: right,
-        wrongAnswers: stats.wrong,
-        timeSpent: TIME_LIMIT - timeLeft,
-      }),
-    }).catch(() => {});
   }, [answers, mode, questions, stats, ticketNumber, timeLeft]);
 
   // Keyboard: 1-4 / A-D answer, ← → navigate, Enter = next

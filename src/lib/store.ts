@@ -69,6 +69,19 @@ export async function kvIncr(key: string): Promise<number> {
   return n;
 }
 
+/** Counter that expires after `ttlSec` (used for rate limiting). */
+export async function kvIncrTtl(key: string, ttlSec: number): Promise<number> {
+  if (storeIsPersistent) {
+    const n = (await redis<number>(['INCR', key])) ?? 0;
+    if (n === 1) await redis(['EXPIRE', key, ttlSec]);
+    return n;
+  }
+  const n = Number(memory.get(key) || '0') + 1;
+  memory.set(key, String(n));
+  setTimeout(() => memory.delete(key), ttlSec * 1000);
+  return n;
+}
+
 export async function kvDel(key: string): Promise<void> {
   if (storeIsPersistent) await redis(['DEL', key]);
   else memory.delete(key);

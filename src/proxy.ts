@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { createSessionToken, getBotToken, readSession, SESSION_COOKIE, SESSION_MAX_AGE, verifyLoginToken } from '@/lib/auth';
+import { createSessionToken, getBotToken, readSession, SESSION_COOKIE, SESSION_MAX_AGE, type TelegramUser } from '@/lib/auth';
+import { kvDel, kvGet } from '@/lib/store';
 
 // Dashboard pages require a Telegram session. /login is bounced to /home when already signed in.
 export async function proxy(request: NextRequest) {
@@ -12,7 +13,10 @@ export async function proxy(request: NextRequest) {
   // Auto-login from payment return token (e.g. returning from Payme/Click)
   const returnToken = request.nextUrl.searchParams.get('return_token');
   if (!user && returnToken) {
-    const verifiedUser = await verifyLoginToken(returnToken);
+    const key = `rt:${returnToken.replace(/[^a-f0-9]/gi, '').slice(0, 64)}`;
+    const saved = await kvGet<{ user: TelegramUser; exp: number }>(key).catch(() => null);
+    if (saved) await kvDel(key).catch(() => {});
+    const verifiedUser = saved && saved.exp > Date.now() ? saved.user : null;
     if (verifiedUser) {
       const session = await createSessionToken(verifiedUser);
       const cleanUrl = new URL(request.url);

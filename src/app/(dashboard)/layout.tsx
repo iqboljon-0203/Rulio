@@ -35,7 +35,7 @@ const navItems = [
   },
   {
     href: '/octagon',
-    label: ['Octagon Arena', 'Октагон'] as [string, string],
+    label: ['AI Trenajyor', 'AI Тренажёр'] as [string, string],
     badge: null,
     badgeType: 'hot',
     icon: (
