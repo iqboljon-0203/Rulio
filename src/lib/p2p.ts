@@ -7,7 +7,7 @@ import { telegram } from './auth';
 export const CARD_NUMBER = (process.env.P2P_CARD_NUMBER || '5614681806639203').replace(/\s/g, '');
 export const CARD_HOLDER = process.env.P2P_CARD_HOLDER || 'IQBOLJON YULDASHEV';
 export const ADMIN_TG_ID = Number(process.env.ADMIN_TG_ID || 1332582307);
-export const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || 'musulman_0201').replace(/^@/, '');
+export const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || 'dream_tech_manager').replace(/^@/, '');
 export const cardPretty = () => CARD_NUMBER.replace(/(\d{4})(?=\d)/g, '$1 ');
 
 export interface P2PPaymentRequest {

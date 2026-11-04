@@ -182,9 +182,19 @@ export default function PricingPage() {
         </p>
       )}
       {waiting && !paid && (
-        <p className={styles.banner} role="status">
-          {t("To'lov kutilmoqda… To'lovni tugatgach shu sahifaga qayting, tarif avtomatik faollashadi.", 'Ожидаем оплату… После оплаты вернитесь на эту страницу, тариф включится автоматически.')}
-        </p>
+        <div className={styles.banner} role="status">
+          <p style={{ margin: 0, marginBottom: '6px' }}>
+            {t("To'lov kutilmoqda… To'lovni tugatgach shu sahifaga qayting, tarif avtomatik faollashadi.", 'Ожидаем оплату… После оплаты вернитесь на эту страницу, тариф включится автоматически.')}
+          </p>
+          <a
+            href="https://t.me/dream_tech_manager"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#0088cc', textDecoration: 'underline', fontWeight: 700 }}
+          >
+            📸 {t("To'lov qildingizmi? Adminga chek tashlash (@dream_tech_manager)", "Оплатили? Отправить чек админу (@dream_tech_manager)")}
+          </a>
+        </div>
       )}
       {locked && !me?.premium && (
         <p className={styles.banner}>{t('Bu bilet Premium tarifda ochiladi. Bepul tarifda 1–5 biletlar ochiq.', 'Этот билет доступен в Premium. Бесплатно открыты билеты 1–5.')}</p>
@@ -219,6 +229,15 @@ export default function PricingPage() {
             </Button>
           </div>
         ))}
+      </div>
+
+      <div className={styles.supportNote}>
+        <p>
+          {t("To'lov bo'yicha savol yoki chek yuborish uchun:", 'По вопросам оплаты или для отправки чека:')}{' '}
+          <a href="https://t.me/dream_tech_manager" target="_blank" rel="noopener noreferrer">
+            @dream_tech_manager
+          </a>
+        </p>
       </div>
 
       {selected && (
@@ -268,10 +287,21 @@ export default function PricingPage() {
                   <p><b>3.</b> {t("Tarif avtomatik ochiladi, shu oynani yopmasangiz ham bo'ladi.", 'Тариф включится автоматически.')}</p>
                 </div>
 
+                <a
+                  href={`https://t.me/${p2p.admin || 'dream_tech_manager'}?text=${encodeURIComponent(
+                    `Assalomu alaykum! Rulio'da to'lov qildim.\nTarif: Premium ${t(...plans.find((p) => p.id === selected)!.name)}\nSumma: ${fmt(p2p.amount)} so'm.\nChekni yubormoqdaman:`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.telegramSendBtn}
+                >
+                  📸 {t("To'lov qildim (Adminga chek tashlash)", "Я оплатил (Отправить чек админу)")}
+                </a>
+
                 <p className={styles.modalSub}>
                   {t("To'lov kutilmoqda…", 'Ожидаем оплату…')}{' '}
-                  <a href={`https://t.me/${p2p.admin}`} target="_blank" rel="noopener noreferrer">
-                    {t("Muammo bo'lsa, adminga yozing", 'Проблема? Напишите админу')}
+                  <a href={`https://t.me/${p2p.admin || 'dream_tech_manager'}`} target="_blank" rel="noopener noreferrer">
+                    @{p2p.admin || 'dream_tech_manager'}
                   </a>
                 </p>
 

@@ -331,3 +331,16 @@
   padding: 0 10px;
 }
 
+.supportNote {
+  text-align: center;
+  margin: var(--space-2xl) 0 var(--space-xl);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.supportNote a {
+  color: #0088cc;
+  font-weight: 700;
+  text-decoration: underline;
+}
+

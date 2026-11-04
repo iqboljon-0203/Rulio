@@ -73,11 +73,12 @@ function getPaymentCardMessage(planKey: PaidPlan, exactAmount?: number, offset?:
     `🔢 <b>Karta raqami:</b> <code>${CARD_NUMBER}</code> <i>(nusxalash uchun bosing)</i>\n` +
     `👤 <b>Karta egasi:</b> ${CARD_HOLDER}\n\n` +
     `⚠️ <b>DIQQAT:</b> Aynan ko'rsatilgan <b>${formattedPrice} so'm</b>ni o'tkazing${offset ? ` (${offset} so'm kam ham, ko'p ham emas)` : ''}!\n` +
-    `⚡ <i>To'lov amalga oshishi bilan tarifingiz 1 soniyada avtomatik faollashtiriladi.</i>`;
+    `⚡ <i>To'lov amalga oshishi bilan tarifingiz 1 soniyada avtomatik faollashtiriladi.</i>\n\n` +
+    `📸 <i>To'lov qilgach, chekni adminga yuborishingiz mumkin:</i> @${ADMIN_USERNAME}`;
 
   const inline_keyboard = [
     [{ text: '🔄 To\'lovni tekshirish', callback_data: `check_${planKey}` }],
-    [{ text: '📸 Chek yuborish', url: `https://t.me/${ADMIN_USERNAME}` }],
+    [{ text: '📸 Adminga chek tashlash', url: `https://t.me/${ADMIN_USERNAME}` }],
     [
       { text: '◀️ Orqaga', callback_data: 'menu_tarifs' },
       { text: '🏠 Asosiy menyu', callback_data: 'menu_main' },
@@ -135,7 +136,7 @@ export async function POST(request: Request) {
         } else {
           await telegram('answerCallbackQuery', {
             callback_query_id: cb.id,
-            text: `⏳ To'lovingiz kutilmoqda. Agar to'lov qilgan bo'lsangiz, "📸 Chek yuborish" orqali chekni yuboring yoki adminga (@${ADMIN_USERNAME}) yozing.`,
+            text: `⏳ To'lovingiz kutilmoqda. Agar to'lov qilgan bo'lsangiz, "📸 Adminga chek tashlash" orqali chekni @${ADMIN_USERNAME} ga yuboring.`,
             show_alert: true,
           });
         }
